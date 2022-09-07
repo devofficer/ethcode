@@ -36,6 +36,10 @@ const avg = (arr: Array<number>) => {
 }
 
 const updateEstimatedGasFee = async (context: vscode.ExtensionContext) => {
+  // Choose gas strategy to apply to current transaction  
+  const priority = await updateGasStrategy(context);
+
+  // Estimate gas fees with priorities
   const web3 = createAlchemyWeb3(getSeletedRpcUrl(context));
 
   const feeHistory = await web3.eth.getFeeHistory(HISTORICAL_BLOCKS, "pending", [1, 50, 99]);
@@ -48,40 +52,33 @@ const updateEstimatedGasFee = async (context: vscode.ExtensionContext) => {
   const pendingBlock = await web3.eth.getBlock("pending");
   const baseFeePerGas = Number(pendingBlock.baseFeePerGas);
 
-  const estimatedGasFee = {
+  const estimatedGasFee: { [key: string]: number } = {
     low: low + baseFeePerGas,
     medium: medium + baseFeePerGas,
     high: high + baseFeePerGas,
   };
 
-  context.workspaceState.update('estimatedGasFee', estimatedGasFee);
+  context.workspaceState.update('estimatedGasFee', estimatedGasFee[priority.toLowerCase()]);
 
-  return estimatedGasFee;
+  return estimatedGasFee[priority.toLowerCase()];
 }
 
 const updateGasStrategy = async (context: vscode.ExtensionContext) => {
-  const quickPick = window.createQuickPick<IGasStrategyQP>();
-
-  const gas = await updateEstimatedGasFee(context);
-  logger.success(gas.high.toString());
-
-  quickPick.items = getGasStrategyNames().map((name) => ({
+  const items = getGasStrategyNames().map((name) => ({
     label: name,
   }));
-  quickPick.onDidChangeActive(() => {
-    quickPick.placeholder = 'Select gas strategy';
-  });
-  quickPick.onDidChangeSelection((selection: readonly IGasStrategyQP[]) => {
-    if (selection[0]) {
-      const { label } = selection[0];
-      context.workspaceState.update('selectedGasStrategy', label);
-      quickPick.dispose();
 
-      logger.success(`Selected gas strategy is ${label}`);
-    }
-  });
-  quickPick.onDidHide(() => quickPick.dispose());
-  quickPick.show();
+  const pick = await vscode.window.showQuickPick(items, { placeHolder: 'Select gas strategy' });
+
+  if (pick) {
+    const { label } = pick;
+    context.workspaceState.update('selectedGasStrategy', label);
+    logger.success(`Selected gas strategy is ${label}`);
+
+    return label;
+  }
+
+  return 'Medium';
 };
 
 export {

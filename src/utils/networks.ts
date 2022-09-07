@@ -8,6 +8,7 @@ import { INetworkQP } from '../types';
 import { getConstructorInputs, getDeployedInputs, getFunctionInputs } from './functions';
 import { errors } from '../config/errors';
 import { getConfiguration, getNetworkNames } from './config';
+import { updateEstimatedGasFee } from './gas';
 
 const provider = ethers.providers;
 
@@ -125,8 +126,11 @@ const callContractMethod = async (context: vscode.ExtensionContext) => {
       logger.success(`Calling ${compiledOutput.name} : ${abiItem.name} --> Success!`);
       logger.log(JSON.stringify(result));
     } else {
+      // Choose gas strategy before executing transaction
+      const estimatedGasFee = await updateEstimatedGasFee(context);
+
       const contract = await getSignedContract(context, contractAddres);
-      const result = await contract[abiItem.name as string](...params);
+      const result = await contract[abiItem.name as string](...params, { gasPrice: estimatedGasFee });
       logger.success("Waiting for confirmation...");
 
       await result.wait();
@@ -145,9 +149,11 @@ const deployContract = async (context: vscode.ExtensionContext) => {
   try {
     logger.success("Deploying contract...");
 
+    const estimatedGasFee = await updateEstimatedGasFee(context);
+
     const myContract = await getContractFactoryWithParams(context);
     const parameters = getConstructorInputs(context);
-    const contract = await myContract.deploy(...parameters);
+    const contract = await myContract.deploy(...parameters, { gasPrice: estimatedGasFee });
 
     context.workspaceState.update('contractAddress', contract.address);
     logger.success(`Contract deployed to ${contract.address}`);
