@@ -128,7 +128,7 @@ const getFunctionInputs = async (context: vscode.ExtensionContext): Promise<Json
         functionKey: f.name || '',
       }));
       quickPick.placeholder = 'Select function';
-      quickPick.onDidChangeSelection((selection: Array<IFunctionQP>) => {
+      quickPick.onDidChangeSelection((selection: readonly IFunctionQP[]) => {
         if (selection[0] && workspace.workspaceFolders) {
           const { functionKey } = selection[0];
           quickPick.dispose();

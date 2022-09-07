@@ -135,7 +135,7 @@ const callContractMethod = async (context: vscode.ExtensionContext) => {
       const estimatedGasFee = await updateEstimatedGasFee(context);
 
       const contract = await getSignedContract(context, contractAddres);
-      const result = await contract[abiItem.name as string](...params, { gasPrice: estimatedGasFee });
+      const result = await contract[abiItem.name as string](...params, { gasPrice: estimatedGasFee, gasLimit: 21000 });
       logger.success("Waiting for confirmation...");
 
       await result.wait();
@@ -158,7 +158,7 @@ const deployContract = async (context: vscode.ExtensionContext) => {
 
     const myContract = await getContractFactoryWithParams(context);
     const parameters = getConstructorInputs(context);
-    const contract = await myContract.deploy(...parameters, { gasPrice: estimatedGasFee });
+    const contract = await myContract.deploy(...parameters, { gasPrice: estimatedGasFee, gasLimit: 21000 });
 
     context.workspaceState.update('contractAddress', contract.address);
     logger.success(`Contract deployed to ${contract.address}`);

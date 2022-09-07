@@ -11,8 +11,7 @@
         "rootDir": ".",
         "strict": true,
         "moduleResolution": "node",
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true
+        "skipLibCheck": true
 	},
 	"include": [
 		"src"

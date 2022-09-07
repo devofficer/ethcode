@@ -47,7 +47,7 @@
           },
           "markdownDescription": "List of networks settings including ethereum, polygon etc",
           "default": {
-            "Ethereum Mainnet": "homestead",
+            "Ethereum Mainnet": "https://mainnet.infura.io/v3/6f513ab6de6243b986232796d29c59b9",
             "Rinkeby Testnet": "rinkeby",
             "Ganache Testnet": "http://127.0.0.1:7545",
             "Hardhat Testnet": "http://127.0.0.1:8545",
@@ -192,6 +192,7 @@
     }
   },
   "dependencies": {
+    "@alch/alchemy-web3": "^1.4.6",
     "@types/randombytes": "^2.0.0",
     "@types/underscore": "^1.11.4",
     "bn.js": "^5.2.1",
@@ -199,7 +200,8 @@
     "keythereum": "^1.2.0",
     "number-to-bn": "^1.7.0",
     "randombytes": "^2.1.0",
-    "underscore": "^1.13.4"
+    "underscore": "^1.13.4",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "@types/keythereum": "^1.2.1",

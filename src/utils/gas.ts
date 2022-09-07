@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { logger } from '../lib';
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
-import { getSelectedAlchemy, getSeletedRpcUrl } from './networks';
+import { getSelectedAlchemy } from './networks';
 import { getGasStrategyNames, HISTORICAL_BLOCKS } from './config';
 
 
@@ -66,11 +66,13 @@ const updateGasStrategy = async (context: vscode.ExtensionContext) => {
     label: name,
   }));
 
-  const pick = await vscode.window.showQuickPick(items, { placeHolder: 'Select gas strategy' });
+  const pick = await vscode.window.showQuickPick(items, { 
+    placeHolder: 'Select gas strategy', 
+    ignoreFocusOut: true 
+  });
 
   if (pick) {
     const { label } = pick;
-    context.workspaceState.update('selectedGasStrategy', label);
     logger.success(`Selected gas strategy is ${label}`);
 
     return label;

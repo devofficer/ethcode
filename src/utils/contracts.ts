@@ -113,7 +113,7 @@ const selectContract = (context: ExtensionContext) => {
     functionKey: f || '',
   }));
   quickPick.placeholder = 'Select a contract.';
-  quickPick.onDidChangeSelection((selection: Array<IFunctionQP>) => {
+  quickPick.onDidChangeSelection((selection: readonly IFunctionQP[]) => {
     if (selection[0] && workspace.workspaceFolders) {
       const { functionKey } = selection[0];
       quickPick.dispose();
