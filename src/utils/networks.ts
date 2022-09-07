@@ -238,5 +238,6 @@ export {
   displayBalance,
   callContractMethod,
   deployContract,
-  isTestingNetwork
+  isTestingNetwork,
+  getSeletedRpcUrl
 };

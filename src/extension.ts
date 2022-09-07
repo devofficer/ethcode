@@ -13,6 +13,7 @@ import {
 import { logger } from './lib';
 import { createKeyPair, deleteKeyPair, selectAccount } from './utils/wallet';
 import { parseBatchCompiledJSON, parseCompiledJSONPayload, selectContract } from './utils';
+import { updateGasStrategy } from './utils/gas';
 
 // eslint-disable-next-line import/prefer-default-export
 export async function activate(context: vscode.ExtensionContext) {
@@ -81,6 +82,10 @@ export async function activate(context: vscode.ExtensionContext) {
     // Call contract method
     commands.registerCommand('ethcode.contract.call', async () => {
       callContractMethod(context);
+    }),
+
+    commands.registerCommand('ethcode.gas.strategy.select', async () => {
+      updateGasStrategy(context);
     }),
 
     // Set custom gas estimate

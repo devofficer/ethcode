@@ -67,6 +67,9 @@ export interface IFunctionQP extends QuickPickItem {
   functionKey: string;
 }
 
+export interface IGasStrategyQP extends QuickPickItem {
+  label: string;
+}
 export interface ConstructorInputValue extends JsonFragment {
   value: string;
 }
