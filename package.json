@@ -47,10 +47,25 @@
           },
           "markdownDescription": "List of networks settings including ethereum, polygon etc",
           "default": {
-            "Ethereum Mainnet": "https://eth-mainnet.g.alchemy.com/v2/-67fewPPmG_FJJed1aJXFZzNySszETfY",
-            "Goerli Testnet": "https://eth-goerli.g.alchemy.com/v2/kZecGjGYZo4n9bmH4A64Ms5jKocM1w1n",
+            "Ethereum Mainnet": "homestead",
+            "Rinkeby Testnet": "rinkeby",
             "Ganache Testnet": "http://127.0.0.1:7545",
-            "Hardhat Testnet": "http://127.0.0.1:8545"
+            "Hardhat Testnet": "http://127.0.0.1:8545",
+            "Ropsten Testnet": "ropsten",
+            "Kovan Testnet": "kovan",
+            "Goerli Testnet": "goerli"
+          }
+        },
+        "ethcode.alchemy": {
+          "scope": "application",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "markdownDescription": "List of networks settings including ethereum, polygon etc",
+          "default": {
+            "Ethereum Mainnet": "https://eth-mainnet.g.alchemy.com/v2/-67fewPPmG_FJJed1aJXFZzNySszETfY",
+            "Goerli Testnet": "https://eth-goerli.g.alchemy.com/v2/kZecGjGYZo4n9bmH4A64Ms5jKocM1w1n"
           }
         },
         "ethcode.grpc.serviceEndpoints": {

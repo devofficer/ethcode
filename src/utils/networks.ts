@@ -22,6 +22,11 @@ const getSeletedRpcUrl = (context: vscode.ExtensionContext) => {
   return networks[getSelectedNetwork(context)];
 };
 
+const getSelectedAlchemy = (context: vscode.ExtensionContext) => {
+  const networks = getConfiguration().get('alchemy') as any;
+  return networks[getSelectedNetwork(context)];
+};
+
 const updateSelectedNetwork = async (context: vscode.ExtensionContext) => {
   const quickPick = window.createQuickPick<INetworkQP>();
 
@@ -237,5 +242,6 @@ export {
   callContractMethod,
   deployContract,
   isTestingNetwork,
-  getSeletedRpcUrl
+  getSeletedRpcUrl,
+  getSelectedAlchemy
 };

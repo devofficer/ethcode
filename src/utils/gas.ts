@@ -1,9 +1,7 @@
 import * as vscode from 'vscode';
-import { window } from 'vscode';
 import { logger } from '../lib';
-import { IGasStrategyQP } from '../types';
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
-import { getSeletedRpcUrl } from './networks';
+import { getSelectedAlchemy, getSeletedRpcUrl } from './networks';
 import { getGasStrategyNames, HISTORICAL_BLOCKS } from './config';
 
 
@@ -40,7 +38,7 @@ const updateEstimatedGasFee = async (context: vscode.ExtensionContext) => {
   const priority = await updateGasStrategy(context);
 
   // Estimate gas fees with priorities
-  const web3 = createAlchemyWeb3(getSeletedRpcUrl(context));
+  const web3 = createAlchemyWeb3(getSelectedAlchemy(context));
 
   const feeHistory = await web3.eth.getFeeHistory(HISTORICAL_BLOCKS, "pending", [1, 50, 99]);
   const blocks = formatFeeHistory(feeHistory, false);
