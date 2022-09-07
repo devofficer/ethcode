@@ -7,17 +7,9 @@ import { extractPvtKey } from './wallet';
 import { INetworkQP } from '../types';
 import { getConstructorInputs, getDeployedInputs, getFunctionInputs } from './functions';
 import { errors } from '../config/errors';
+import { getConfiguration, getNetworkNames } from './config';
 
 const provider = ethers.providers;
-
-const getConfiguration = () => {
-  return vscode.workspace.getConfiguration('ethcode');
-};
-
-const getNetworkNames = (): Array<string> => {
-  const networks = getConfiguration().get('networks') as object;
-  return Object.keys(networks);
-};
 
 // Selected Network Configuratin Helper
 const getSelectedNetwork = (context: vscode.ExtensionContext): string => {
@@ -38,7 +30,7 @@ const updateSelectedNetwork = async (context: vscode.ExtensionContext) => {
   quickPick.onDidChangeActive(() => {
     quickPick.placeholder = 'Select network';
   });
-  quickPick.onDidChangeSelection((selection: Array<INetworkQP>) => {
+  quickPick.onDidChangeSelection((selection: readonly INetworkQP[]) => {
     if (selection[0]) {
       const { label } = selection[0];
       context.workspaceState.update('selectedNetwork', label);

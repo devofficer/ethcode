@@ -47,13 +47,10 @@
           },
           "markdownDescription": "List of networks settings including ethereum, polygon etc",
           "default": {
-            "Ethereum Mainnet": "https://mainnet.infura.io/v3/6f513ab6de6243b986232796d29c59b9",
-            "Rinkeby Testnet": "rinkeby",
+            "Ethereum Mainnet": "https://eth-mainnet.g.alchemy.com/v2/-67fewPPmG_FJJed1aJXFZzNySszETfY",
+            "Goerli Testnet": "https://eth-goerli.g.alchemy.com/v2/kZecGjGYZo4n9bmH4A64Ms5jKocM1w1n",
             "Ganache Testnet": "http://127.0.0.1:7545",
-            "Hardhat Testnet": "http://127.0.0.1:8545",
-            "Ropsten Testnet": "ropsten",
-            "Kovan Testnet": "kovan",
-            "Goerli Testnet": "goerli"
+            "Hardhat Testnet": "http://127.0.0.1:8545"
           }
         },
         "ethcode.grpc.serviceEndpoints": {
@@ -74,11 +71,9 @@
           },
           "markdownDescription": "List of gas strategies",
           "default": {
-            "Slowest": "slowest",
-            "Slow": "slow",
-            "Normal": "normal",
-            "Fast": "fast",
-            "Fastest": "fastest"
+            "Low": "low",
+            "Medium": "medium",
+            "High": "high"
           }
         }
       }
@@ -189,15 +184,12 @@
     "keythereum": "^1.2.0",
     "number-to-bn": "^1.7.0",
     "randombytes": "^2.1.0",
-    "underscore": "^1.13.4",
-    "utf8": "^3.0.0",
-    "web3": "^1.7.5"
+    "underscore": "^1.13.4"
   },
   "devDependencies": {
     "@types/keythereum": "^1.2.1",
     "@types/node": "^18.0.0",
     "@types/vscode": "^1.38.1",
-    "@types/web3": "^1.2.2",
     "prettier": "^2.1.2",
     "typescript": "^4.7.4",
     "vscode": "^1.1.37"
