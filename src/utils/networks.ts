@@ -7,25 +7,10 @@ import { extractPvtKey } from './wallet';
 import { INetworkQP } from '../types';
 import { getConstructorInputs, getDeployedInputs, getFunctionInputs } from './functions';
 import { errors } from '../config/errors';
-import { getConfiguration, getNetworkNames } from './config';
+import { getNetworkNames, getSelectedNetwork, getSeletedRpcUrl } from './config';
 import { updateEstimatedGasFee } from './gas';
 
 const provider = ethers.providers;
-
-// Selected Network Configuratin Helper
-const getSelectedNetwork = (context: vscode.ExtensionContext): string => {
-  return context.workspaceState.get('selectedNetwork') as string;
-};
-
-const getSeletedRpcUrl = (context: vscode.ExtensionContext) => {
-  const networks = getConfiguration().get('networks') as any;
-  return networks[getSelectedNetwork(context)];
-};
-
-const getSelectedAlchemy = (context: vscode.ExtensionContext) => {
-  const networks = getConfiguration().get('alchemy') as any;
-  return networks[getSelectedNetwork(context)];
-};
 
 const updateSelectedNetwork = async (context: vscode.ExtensionContext) => {
   const quickPick = window.createQuickPick<INetworkQP>();
@@ -153,12 +138,10 @@ const callContractMethod = async (context: vscode.ExtensionContext) => {
 const deployContract = async (context: vscode.ExtensionContext) => {
   try {
     logger.success("Deploying contract...");
-
-    const estimatedGasFee = await updateEstimatedGasFee(context);
-
     const myContract = await getContractFactoryWithParams(context);
+    const gasOption = await updateEstimatedGasFee(context, myContract.bytecode);
     const parameters = getConstructorInputs(context);
-    const contract = await myContract.deploy(...parameters, { gasPrice: estimatedGasFee, gasLimit: 21000 });
+    const contract = await myContract.deploy(...parameters, gasOption);
 
     context.workspaceState.update('contractAddress', contract.address);
     logger.success(`Contract deployed to ${contract.address}`);
@@ -241,7 +224,5 @@ export {
   displayBalance,
   callContractMethod,
   deployContract,
-  isTestingNetwork,
-  getSeletedRpcUrl,
-  getSelectedAlchemy
+  isTestingNetwork
 };

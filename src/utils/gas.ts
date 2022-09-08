@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import { logger } from '../lib';
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
-import { getSelectedAlchemy } from './networks';
-import { getGasStrategyNames, HISTORICAL_BLOCKS } from './config';
+import { getSelectedAlchemy, getGasStrategyNames, HISTORICAL_BLOCKS } from './config';
 
 
 const formatFeeHistory = (result: any, includePending: boolean)
@@ -33,12 +32,12 @@ const avg = (arr: Array<number>) => {
   return Math.round(sum / arr.length);
 }
 
-const updateEstimatedGasFee = async (context: vscode.ExtensionContext) => {
+const updateEstimatedGasFee = async (context: vscode.ExtensionContext, data?: string) => {
   // Choose gas strategy to apply to current transaction  
   const priority = await updateGasStrategy(context);
 
   // Estimate gas fees with priorities
-  const web3 = createAlchemyWeb3(getSelectedAlchemy(context));
+  const web3 = createAlchemyWeb3("https://eth-goerli.g.alchemy.com/v2/kZecGjGYZo4n9bmH4A64Ms5jKocM1w1n");
 
   const feeHistory = await web3.eth.getFeeHistory(HISTORICAL_BLOCKS, "pending", [1, 50, 99]);
   const blocks = formatFeeHistory(feeHistory, false);
@@ -47,18 +46,20 @@ const updateEstimatedGasFee = async (context: vscode.ExtensionContext) => {
   const medium = avg(blocks.map(b => b.priorityFeePerGas[1]));
   const high = avg(blocks.map(b => b.priorityFeePerGas[2]));
 
-  const pendingBlock = await web3.eth.getBlock("pending");
-  const baseFeePerGas = Number(pendingBlock.baseFeePerGas);
-
+  const baseFeePerGas = blocks[blocks.length - 1].baseFeePerGas;
+  const tip = await web3.eth.getMaxPriorityFeePerGas();
+  const gasLimit = 21000 + (data ? 68 * data.length : 0);
   const estimatedGasFee: { [key: string]: number } = {
     low: low + baseFeePerGas,
     medium: medium + baseFeePerGas,
     high: high + baseFeePerGas,
   };
 
-  context.workspaceState.update('estimatedGasFee', estimatedGasFee[priority.toLowerCase()]);
-
-  return estimatedGasFee[priority.toLowerCase()];
+  return {
+    gasLimit,
+    maxPriorityFeePerGas: Number(tip),
+    maxFeePerGas: estimatedGasFee[priority.toLowerCase()],
+  }
 }
 
 const updateGasStrategy = async (context: vscode.ExtensionContext) => {
@@ -66,9 +67,9 @@ const updateGasStrategy = async (context: vscode.ExtensionContext) => {
     label: name,
   }));
 
-  const pick = await vscode.window.showQuickPick(items, { 
-    placeHolder: 'Select gas strategy', 
-    ignoreFocusOut: true 
+  const pick = await vscode.window.showQuickPick(items, {
+    placeHolder: 'Select gas strategy',
+    ignoreFocusOut: true
   });
 
   if (pick) {
