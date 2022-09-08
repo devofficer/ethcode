@@ -37,7 +37,7 @@ const updateEstimatedGasFee = async (context: vscode.ExtensionContext, data?: st
   const priority = await updateGasStrategy(context);
 
   // Estimate gas fees with priorities
-  const web3 = createAlchemyWeb3("https://eth-goerli.g.alchemy.com/v2/kZecGjGYZo4n9bmH4A64Ms5jKocM1w1n");
+  const web3 = createAlchemyWeb3(getSelectedAlchemy(context));
 
   const feeHistory = await web3.eth.getFeeHistory(HISTORICAL_BLOCKS, "pending", [1, 50, 99]);
   const blocks = formatFeeHistory(feeHistory, false);
